@@ -1,0 +1,48 @@
+@model PIV_PF_ProyectoFinal.ViewModels.UsuarioViewModel
+
+@{
+    ViewBag.Title = "Detalles del usuario";
+}
+
+<h1 class="page-title">Detalles del usuario</h1>
+
+<div class="form-panel">
+    <div class="form-group">
+        <label>Identificacion</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Identificacion</div>
+    </div>
+
+    <div class="form-group">
+        <label>Nombre completo</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.NombreCompleto</div>
+    </div>
+
+    <div class="form-group">
+        <label>Correo electronico</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Correo</div>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo de usuario</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.TipoUsuario</div>
+    </div>
+
+    <div class="form-group">
+        <label>Estado</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Estado</div>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha de registro</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+        <a href="@Url.Action("Edit", new { id = Model.IdUsuario })" class="btn btn-primary">
+            <i class="fa-solid fa-pen"></i> Editar
+        </a>
+    </div>
+</div>

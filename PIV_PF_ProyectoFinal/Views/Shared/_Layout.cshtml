@@ -1,0 +1,55 @@
+@*
+    Master Layout - Estilo EDUS (version web / escritorio)
+    Ubicacion: Views/Shared/_Layout.cshtml
+*@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - La Farmacia</title>
+
+    <link href="@Url.Content("~/Content/edus-theme.css")" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          media="print" onload="this.media='all'" />
+</head>
+<body>
+
+    @* ---------- Barra superior ---------- *@
+    <header class="top-bar">
+        <a href="@Url.Action("Index", "Home")" class="logo">
+            <i class="fa-solid fa-prescription-bottle-medical"></i>
+            <span>La Farmacia</span>
+        </a>
+        <div class="user-info">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>@(Session["NombreUsuario"] ?? "Usuario")</span>
+            <span style="color:var(--text-muted); margin:0 6px;">|</span>
+            <span style="font-size:0.8rem; color:var(--text-muted);">@Session["TipoUsuario"]</span>
+            <a href="@Url.Action("Logout", "Account")"
+               style="margin-left:14px; font-size:0.82rem; color:var(--text-muted);"
+               title="Cerrar sesion">
+                <i class="fa-solid fa-right-from-bracket"></i> Salir
+            </a>
+        </div>
+    </header>
+
+    @* ---------- Contenido principal ---------- *@
+    <main class="main-container">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        @RenderBody()
+    </main>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

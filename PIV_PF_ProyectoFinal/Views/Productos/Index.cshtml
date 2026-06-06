@@ -1,0 +1,96 @@
+@model IEnumerable<PIV_PF_ProyectoFinal.ViewModels.ProductoViewModel>
+
+@{
+    ViewBag.Title = "Productos";
+    var tipo = Session["TipoUsuario"] as string ?? "";
+}
+
+<div class="toolbar">
+    <div>
+        <h1 class="page-title">Productos</h1>
+        <p class="page-subtitle">Listado de todos los productos registrados en el sistema.</p>
+    </div>
+    @if (tipo == "Administrador")
+    {
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Nuevo producto
+        </a>
+    }
+</div>
+
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <th>Tipo</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Estado</th>
+                <th style="text-align:right;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="7" style="text-align:center; padding:28px; color:var(--text-muted);">
+                        No hay productos registrados.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var producto in Model)
+                {
+                    <tr>
+                        <td>@producto.CodigoProducto</td>
+                        <td>@producto.Descripcion</td>
+                        <td>@producto.DescripcionTipo</td>
+                        <td>&#8353;@producto.Precio.ToString("N2")</td>
+                        <td>@producto.Cantidad</td>
+                        <td>
+                            <span class="badge @(producto.Estado == "En existencia" ? "badge-success" : "badge-danger")">
+                                @producto.Estado
+                            </span>
+                        </td>
+                        <td style="text-align:right;">
+
+                            @* ver detalles — todos los roles *@
+                            <a href="@Url.Action("Details", new { id = producto.CodigoProducto })"
+                               class="btn btn-secondary btn-sm" title="Ver detalles">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+
+                            @* editar — solo Administrador *@
+                            @if (tipo == "Administrador")
+                            {
+                                <a href="@Url.Action("Edit", new { id = producto.CodigoProducto })"
+                                   class="btn btn-primary btn-sm" title="Editar">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                            }
+
+                            @* surtir — Administrador y Surtidor *@
+                            @if (tipo == "Administrador" || tipo == "Surtidor")
+                            {
+                                <a href="@Url.Action("Surtir", new { id = producto.CodigoProducto })"
+                                   class="btn btn-primary btn-sm" title="Surtir">
+                                    <i class="fa-solid fa-boxes-stacking"></i>
+                                </a>
+                            }
+
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top:20px;">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
+</div>

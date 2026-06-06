@@ -1,0 +1,48 @@
+@model PIV_PF_ProyectoFinal.ViewModels.ProductoViewModel
+
+@{
+    ViewBag.Title = "Detalles del producto";
+}
+
+<h1 class="page-title">Detalles del producto</h1>
+
+<div class="form-panel">
+    <div class="form-group">
+        <label>Codigo del producto</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.CodigoProducto</div>
+    </div>
+
+    <div class="form-group">
+        <label>Descripcion</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Descripcion</div>
+    </div>
+
+    <div class="form-group">
+        <label>Tipo de producto</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.DescripcionTipo</div>
+    </div>
+
+    <div class="form-group">
+        <label>Precio</label>
+        <div class="form-control" style="background-color:#0f1418;">&#8353;@Model.Precio.ToString("N2")</div>
+    </div>
+
+    <div class="form-group">
+        <label>Cantidad en existencia</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Cantidad unidades</div>
+    </div>
+
+    <div class="form-group">
+        <label>Estado</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Estado</div>
+    </div>
+
+    <div class="form-actions">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+        <a href="@Url.Action("Edit", new { id = Model.CodigoProducto })" class="btn btn-primary">
+            <i class="fa-solid fa-pen"></i> Editar
+        </a>
+    </div>
+</div>

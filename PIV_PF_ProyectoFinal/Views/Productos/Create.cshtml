@@ -1,0 +1,65 @@
+@model PIV_PF_ProyectoFinal.ViewModels.ProductoViewModel
+
+@{
+    ViewBag.Title = "Nuevo producto";
+}
+
+<h1 class="page-title">Nuevo producto</h1>
+<p class="page-subtitle">Complete los datos del producto que desea registrar.</p>
+
+@using (Html.BeginForm("Create", "Productos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-panel">
+
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.CodigoProducto)
+            @Html.TextBoxFor(m => m.CodigoProducto, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.CodigoProducto)
+            <small style="color:var(--text-muted);">Codigo generado automaticamente, puede modificarlo si lo necesita.</small>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Descripcion)
+            @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control", placeholder = "Ej: Aspirina 100mg - 20 tabletas" })
+            @Html.ValidationMessageFor(m => m.Descripcion)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Precio)
+            @Html.TextBoxFor(m => m.Precio, new { @class = "form-control", placeholder = "Ej: 1500.00", type = "number", step = "0.01", min = "0.01" })
+            @Html.ValidationMessageFor(m => m.Precio)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Cantidad)
+            @Html.TextBoxFor(m => m.Cantidad, new { @class = "form-control", type = "number", min = "0", placeholder = "0" })
+            @Html.ValidationMessageFor(m => m.Cantidad)
+            <small style="color:var(--text-muted);">Si la cantidad es 0, el estado se ajusta a Agotado automaticamente.</small>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.CodigoTipo)
+            @Html.DropDownListFor(m => m.CodigoTipo, (SelectList)ViewBag.TiposProducto,
+                "-- Seleccione un tipo --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.CodigoTipo)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Estado)
+            @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.Estados,
+                "-- Seleccione un estado --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Estado)
+        </div>
+
+        <div class="form-actions">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> Guardar producto
+            </button>
+        </div>
+    </div>
+}

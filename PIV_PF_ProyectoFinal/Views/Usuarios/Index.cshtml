@@ -1,0 +1,73 @@
+@model IEnumerable<PIV_PF_ProyectoFinal.ViewModels.UsuarioViewModel>
+
+@{
+    ViewBag.Title = "Usuarios";
+}
+
+<div class="toolbar">
+    <div>
+        <h1 class="page-title">Usuarios del sistema</h1>
+        <p class="page-subtitle">Listado de todos los usuarios registrados.</p>
+    </div>
+    <a href="@Url.Action("Create")" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Nuevo usuario
+    </a>
+</div>
+
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Identificacion</th>
+                <th>Nombre completo</th>
+                <th>Correo electronico</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th style="text-align:right;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" style="text-align:center; padding:28px; color:var(--text-muted);">
+                        No hay usuarios registrados.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var usuario in Model)
+                {
+                    <tr>
+                        <td>@usuario.Identificacion</td>
+                        <td>@usuario.NombreCompleto</td>
+                        <td>@usuario.Correo</td>
+                        <td>@usuario.TipoUsuario</td>
+                        <td>
+                            <span class="badge @(usuario.Estado == "Activo" ? "badge-success" : "badge-danger")">
+                                @usuario.Estado
+                            </span>
+                        </td>
+                        <td style="text-align:right;">
+                            <a href="@Url.Action("Details", new { id = usuario.IdUsuario })"
+                               class="btn btn-secondary btn-sm" title="Ver detalles">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <a href="@Url.Action("Edit", new { id = usuario.IdUsuario })"
+                               class="btn btn-primary btn-sm" title="Editar">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top:20px;">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
+</div>

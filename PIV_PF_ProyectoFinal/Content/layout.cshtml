@@ -1,0 +1,66 @@
+@*
+    Master Layout - Estilo EDUS
+    Ubicacion: Views/Shared/_Layout.cshtml
+    Reutilizable: cambia el titulo y el logo para otros proyectos.
+*@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - La Farmacia</title>
+
+    @* Estilos del tema *@
+    <link href="@Url.Content("~/Content/edus-theme.css")" rel="stylesheet" type="text/css" />
+
+    @* Iconos: Font Awesome 6 desde CDN *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+
+    @* ---------- Barra superior ---------- *@
+    <header class="top-bar">
+        <a href="@Url.Action("Index", "Home")" class="logo">
+            <i class="fa-solid fa-prescription-bottle-medical"></i>
+            <span>La Farmacia</span>
+        </a>
+        <div class="icons">
+            <button type="button" class="icon-btn" title="Notificaciones">
+                <i class="fa-regular fa-bell"></i>
+            </button>
+            <button type="button" class="icon-btn" title="Ayuda">
+                <i class="fa-regular fa-circle-question"></i>
+            </button>
+        </div>
+    </header>
+
+    @* ---------- Contenido principal ---------- *@
+    <main class="main-container">
+        @* Mensajes flash (TempData) *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        @RenderBody()
+    </main>
+
+    @* ---------- Barra inferior ---------- *@
+    <nav class="bottom-bar">
+        <a href="@Url.Action("Index", "Home")" class="bottom-item @(ViewBag.ActiveMenu == "Home" ? "active" : "")">
+            <i class="fa-solid fa-house"></i>
+            <span>Inicio</span>
+        </a>
+        <a href="@Url.Action("Index", "Configuracion")" class="bottom-item @(ViewBag.ActiveMenu == "Config" ? "active" : "")">
+            <i class="fa-solid fa-gear"></i>
+            <span>Configuración</span>
+        </a>
+    </nav>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

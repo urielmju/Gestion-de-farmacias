@@ -1,0 +1,76 @@
+﻿@model PIV_PF_ProyectoFinal.ViewModels.FacturaViewModel
+
+@{
+    ViewBag.Title = "Detalle de factura";
+}
+
+<h1 class="page-title">Factura @Model.CodigoFactura</h1>
+
+<div class="form-panel">
+    <div class="form-group">
+        <label>Codigo de factura</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.CodigoFactura</div>
+    </div>
+    <div class="form-group">
+        <label>Fecha</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</div>
+    </div>
+    <div class="form-group">
+        <label>Cliente</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.NombreCliente</div>
+    </div>
+    <div class="form-group">
+        <label>Metodo de pago</label>
+        <div class="form-control" style="background-color:#0f1418;">@Model.MetodoPago</div>
+    </div>
+</div>
+
+<h2 class="page-title" style="margin-top:24px; font-size:1.1rem;">Productos comprados</h2>
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Descripcion</th>
+                <th>Precio unitario</th>
+                <th>Cantidad</th>
+                <th>Subtotal linea</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in Model.Detalles)
+            {
+                <tr>
+                    <td>@d.CodigoProducto</td>
+                    <td>@d.DescripcionProducto</td>
+                    <td>&#8353;@d.PrecioUnitario.ToString("N2")</td>
+                    <td>@d.Cantidad</td>
+                    <td>&#8353;@d.SubtotalLinea.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align:right; padding-right:12px;"><strong>Subtotal</strong></td>
+                <td>&#8353;@Model.Subtotal.ToString("N2")</td>
+            </tr>
+            @if (Model.Recargo > 0)
+            {
+                <tr>
+                    <td colspan="4" style="text-align:right; padding-right:12px;">Recargo (2% tarjeta)</td>
+                    <td>&#8353;@Model.Recargo.ToString("N2")</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="4" style="text-align:right; padding-right:12px;"><strong>Total</strong></td>
+                <td><strong>&#8353;@Model.Total.ToString("N2")</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div style="margin-top:20px;">
+    <a href="@Url.Action("Index")" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Volver
+    </a>
+</div>

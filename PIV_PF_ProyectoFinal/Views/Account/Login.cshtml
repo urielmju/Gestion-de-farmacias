@@ -1,0 +1,102 @@
+﻿@model PIV_PF_ProyectoFinal.ViewModels.LoginViewModel
+
+@{
+    ViewBag.Title = "Iniciar sesion";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>La Farmacia - Iniciar sesion</title>
+    <link href="@Url.Content("~/Content/edus-theme.css")" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          media="print" onload="this.media='all'" />
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+            .login-logo i {
+                font-size: 2.5rem;
+                color: var(--accent);
+            }
+
+            .login-logo h1 {
+                font-size: 1.4rem;
+                margin: 8px 0 4px;
+                color: var(--text-primary);
+            }
+
+            .login-logo p {
+                font-size: 0.85rem;
+                color: var(--text-muted);
+                margin: 0;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="login-logo">
+            <i class="fa-solid fa-prescription-bottle-medical"></i>
+            <h1>La Farmacia</h1>
+            <p>Sistema de gestion</p>
+        </div>
+
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(false, "", new { @class = "validation-summary-errors" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Identificacion)
+                @Html.TextBoxFor(m => m.Identificacion, new
+                {
+                    @class = "form-control",
+                    placeholder = "Identificacion o correo electronico",
+                    autofocus = "autofocus"
+                })
+                @Html.ValidationMessageFor(m => m.Identificacion)
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
+                @Html.LabelFor(m => m.Contrasena)
+                @Html.PasswordFor(m => m.Contrasena, new
+                {
+                    @class = "form-control",
+                    placeholder = "Contrasena"
+                })
+                @Html.ValidationMessageFor(m => m.Contrasena)
+            </div>
+
+            <div style="margin-top:24px;">
+                <button type="submit" class="btn btn-primary" style="width:100%;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                </button>
+            </div>
+        }
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+</body>
+</html>

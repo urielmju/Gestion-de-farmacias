@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="788da992d1e149e08cb4a81345499944" Name="Diagram1">
+        <EntityTypeShape EntityType="PIV_PF_ProyectoFinalModel.Clientes" Width="1.5" PointX="2.5" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PIV_PF_ProyectoFinalModel.DetalleFactura" Width="1.5" PointX="5.625" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PIV_PF_ProyectoFinalModel.Facturas" Width="1.5" PointX="4.5" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PIV_PF_ProyectoFinalModel.Productos" Width="1.5" PointX="3" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PIV_PF_ProyectoFinalModel.TiposProducto" Width="1.5" PointX="0.5" PointY="0.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="PIV_PF_ProyectoFinalModel.Usuarios" Width="1.5" PointX="7.875" PointY="0.5" IsExpanded="true" />
+        <AssociationConnector Association="PIV_PF_ProyectoFinalModel.FK_Facturas_Cliente" ManuallyRouted="false" />
+        <AssociationConnector Association="PIV_PF_ProyectoFinalModel.FK_Detalle_Factura" ManuallyRouted="false" />
+        <AssociationConnector Association="PIV_PF_ProyectoFinalModel.FK_Detalle_Producto" ManuallyRouted="false" />
+        <AssociationConnector Association="PIV_PF_ProyectoFinalModel.FK_Productos_Tipo" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

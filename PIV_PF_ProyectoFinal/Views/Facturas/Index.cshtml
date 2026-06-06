@@ -1,0 +1,72 @@
+﻿@model IEnumerable<PIV_PF_ProyectoFinal.ViewModels.FacturaViewModel>
+
+@{
+    ViewBag.Title = "Historial de facturas";
+}
+
+<div class="toolbar">
+    <div>
+        <h1 class="page-title">Historial de facturas</h1>
+        <p class="page-subtitle">Todas las ventas registradas en el sistema.</p>
+    </div>
+    @if ((Session["TipoUsuario"] as string) != "Contabilidad")
+    {
+        <a href="@Url.Action("Create")" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Nueva factura
+        </a>
+    }
+</div>
+
+<div class="data-panel">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Metodo de pago</th>
+                <th>Subtotal</th>
+                <th>Recargo</th>
+                <th>Total</th>
+                <th style="text-align:right;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="8" style="text-align:center; padding:28px; color:var(--text-muted);">
+                        No hay facturas registradas.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var f in Model)
+                {
+                    <tr>
+                        <td>@f.CodigoFactura</td>
+                        <td>@f.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@f.NombreCliente</td>
+                        <td>@f.MetodoPago</td>
+                        <td>&#8353;@f.Subtotal.ToString("N2")</td>
+                        <td>&#8353;@f.Recargo.ToString("N2")</td>
+                        <td><strong>&#8353;@f.Total.ToString("N2")</strong></td>
+                        <td style="text-align:right;">
+                            <a href="@Url.Action("Details", new { id = f.CodigoFactura })"
+                               class="btn btn-secondary btn-sm" title="Ver detalle">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top:20px;">
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
+</div>

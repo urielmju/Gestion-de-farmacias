@@ -1,0 +1,65 @@
+@model PIV_PF_ProyectoFinal.ViewModels.ProductoViewModel
+
+@{
+    ViewBag.Title = "Editar producto";
+}
+
+<h1 class="page-title">Editar producto</h1>
+<p class="page-subtitle">Se puede actualizar la descripcion, precio, cantidad, tipo y estado.</p>
+
+@using (Html.BeginForm("Edit", "Productos", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CodigoProducto)
+
+    <div class="form-panel">
+
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.CodigoProducto)
+            <div class="form-control" style="background-color:#0f1418;">@Model.CodigoProducto</div>
+            <small style="color:var(--text-muted);">El codigo del producto no se puede modificar.</small>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Descripcion)
+            @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Descripcion)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Precio)
+            @Html.TextBoxFor(m => m.Precio, new { @class = "form-control", type = "number", step = "0.01", min = "0.01" })
+            @Html.ValidationMessageFor(m => m.Precio)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Cantidad)
+            @Html.TextBoxFor(m => m.Cantidad, new { @class = "form-control", type = "number", min = "0" })
+            @Html.ValidationMessageFor(m => m.Cantidad)
+            <small style="color:var(--text-muted);">Si la cantidad es 0, el estado cambia a Agotado automaticamente.</small>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.CodigoTipo)
+            @Html.DropDownListFor(m => m.CodigoTipo, (SelectList)ViewBag.TiposProducto,
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.CodigoTipo)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Estado)
+            @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.Estados,
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Estado)
+        </div>
+
+        <div class="form-actions">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> Guardar cambios
+            </button>
+        </div>
+    </div>
+}

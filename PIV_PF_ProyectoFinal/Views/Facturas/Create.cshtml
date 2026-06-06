@@ -1,0 +1,237 @@
+﻿@model PIV_PF_ProyectoFinal.ViewModels.FacturaViewModel
+
+@{
+    ViewBag.Title = "Nueva factura";
+}
+
+<h1 class="page-title">Nueva factura</h1>
+<p class="page-subtitle">Registre los productos que el cliente desea comprar.</p>
+
+@using (Html.BeginForm("Create", "Facturas", FormMethod.Post, new { id = "formFactura" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CodigoFactura)
+
+    @Html.ValidationSummary(false, "", new { @class = "validation-summary-errors" })
+
+    <div class="form-panel">
+        <div class="form-group">
+            <label>Cliente</label>
+            @Html.DropDownListFor(m => m.IdCliente, (SelectList)ViewBag.Clientes,
+                "-- Seleccione un cliente --", new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label>Metodo de pago</label>
+            @Html.DropDownListFor(m => m.MetodoPago,
+                new SelectList(new[] {
+                    new { V = "Efectivo", T = "Efectivo" },
+                    new { V = "Tarjeta",  T = "Tarjeta (+2%)" }
+                }, "V", "T"),
+                "-- Seleccione --",
+                new { @class = "form-control", id = "metodoPago" })
+        </div>
+    </div>
+
+    <h2 class="page-title" style="margin-top:24px; font-size:1.1rem;">Agregar productos</h2>
+    <div class="form-panel">
+        <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+            <div style="flex:2; min-width:200px;">
+                <label>Producto</label>
+                <select id="selProducto" class="form-control">
+                    <option value="">-- Seleccione un producto --</option>
+                    @foreach (var p in (IEnumerable<System.Web.Mvc.SelectListItem>)ViewBag.Productos)
+                    {
+                        <option value="@p.Value">@p.Text</option>
+                    }
+                </select>
+            </div>
+            <div style="flex:1; min-width:100px;">
+                <label>Cantidad</label>
+                <input type="number" id="inpCantidad" class="form-control" min="1" value="1" />
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary" onclick="agregarLinea()">
+                    <i class="fa-solid fa-plus"></i> Agregar
+                </button>
+            </div>
+        </div>
+        <p id="msgStock" style="color:#e74c3c; margin-top:6px; display:none;"></p>
+    </div>
+
+    <div class="data-panel" style="margin-top:16px;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Descripcion</th>
+                    <th>Precio unitario</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoDetalle">
+                <tr>
+                    <td colspan="6" style="text-align:center; color:var(--text-muted); padding:20px;">
+                        No hay productos agregados.
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align:right; padding-right:12px;"><strong>Subtotal</strong></td>
+                    <td id="tdSubtotal">&#8353;0.00</td>
+                    <td></td>
+                </tr>
+                <tr id="filaRecargo" style="display:none;">
+                    <td colspan="4" style="text-align:right; padding-right:12px;">Recargo (2% tarjeta)</td>
+                    <td id="tdRecargo">&#8353;0.00</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="text-align:right; padding-right:12px;"><strong>Total</strong></td>
+                    <td id="tdTotal"><strong>&#8353;0.00</strong></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div id="hiddenInputs"></div>
+
+    <div class="form-actions" style="margin-top:20px;">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Registrar factura
+        </button>
+    </div>
+}
+
+@section scripts {
+    <script>
+    var lineas = [];
+
+    function agregarLinea() {
+        var sel    = document.getElementById('selProducto');
+        var cant   = parseInt(document.getElementById('inpCantidad').value);
+        var codigo = sel.value;
+        var msg    = document.getElementById('msgStock');
+
+        msg.style.display = 'none';
+
+        if (!codigo) {
+            msg.textContent = 'Seleccione un producto.';
+            msg.style.display = '';
+            return;
+        }
+        if (!cant || cant < 1) {
+            msg.textContent = 'La cantidad debe ser mayor a cero.';
+            msg.style.display = '';
+            return;
+        }
+
+        $.getJSON('@Url.Action("GetProducto", "Facturas")', { id: codigo }, function(data) {
+            if (!data.ok) {
+                msg.textContent = 'Producto no encontrado.';
+                msg.style.display = '';
+                return;
+            }
+
+            var p = data.producto;
+
+            if (p.Estado === 'Agotado' || p.Cantidad <= 0) {
+                msg.textContent = 'Este producto esta agotado.';
+                msg.style.display = '';
+                return;
+            }
+            if (cant > p.Cantidad) {
+                msg.textContent = 'Stock insuficiente. Disponible: ' + p.Cantidad + ' unidades.';
+                msg.style.display = '';
+                return;
+            }
+
+            var existente = lineas.findIndex(function(l) { return l.codigo === codigo; });
+            if (existente >= 0) {
+                var nuevaCant = lineas[existente].cantidad + cant;
+                if (nuevaCant > p.Cantidad) {
+                    msg.textContent = 'Stock insuficiente. Disponible: ' + p.Cantidad + ' unidades.';
+                    msg.style.display = '';
+                    return;
+                }
+                lineas[existente].cantidad = nuevaCant;
+                lineas[existente].subtotal = lineas[existente].precio * nuevaCant;
+            } else {
+                lineas.push({
+                    codigo:      p.CodigoProducto,
+                    descripcion: p.Descripcion,
+                    precio:      p.Precio,
+                    cantidad:    cant,
+                    subtotal:    p.Precio * cant
+                });
+            }
+
+            renderTabla();
+            sel.value = '';
+            document.getElementById('inpCantidad').value = 1;
+        });
+    }
+
+    function quitarLinea(codigo) {
+        lineas = lineas.filter(function(l) { return l.codigo !== codigo; });
+        renderTabla();
+    }
+
+    function renderTabla() {
+        var tbody     = document.getElementById('cuerpoDetalle');
+        var hidden    = document.getElementById('hiddenInputs');
+        var esTarjeta = document.getElementById('metodoPago').value === 'Tarjeta';
+
+        tbody.innerHTML  = '';
+        hidden.innerHTML = '';
+
+        if (lineas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px;">No hay productos agregados.</td></tr>';
+            actualizarTotales(0, esTarjeta);
+            return;
+        }
+
+        var subtotal = 0;
+        $.each(lineas, function(i, l) {
+            subtotal += l.subtotal;
+            tbody.innerHTML +=
+                '<tr>' +
+                '<td>' + l.codigo + '</td>' +
+                '<td>' + l.descripcion + '</td>' +
+                '<td>\u20A1' + l.precio.toFixed(2) + '</td>' +
+                '<td>' + l.cantidad + '</td>' +
+                '<td>\u20A1' + l.subtotal.toFixed(2) + '</td>' +
+                '<td><button type="button" class="btn btn-secondary btn-sm" onclick="quitarLinea(\'' + l.codigo + '\')">' +
+                '<i class="fa-solid fa-trash"></i></button></td>' +
+                '</tr>';
+
+            hidden.innerHTML +=
+                '<input type="hidden" name="codigos"    value="' + l.codigo    + '" />' +
+                '<input type="hidden" name="cantidades" value="' + l.cantidad  + '" />';
+        });
+
+        actualizarTotales(subtotal, esTarjeta);
+    }
+
+    function actualizarTotales(subtotal, esTarjeta) {
+        var recargo = esTarjeta ? Math.round(subtotal * 0.02 * 100) / 100 : 0;
+        var total   = subtotal + recargo;
+
+        document.getElementById('tdSubtotal').textContent = '\u20A1' + subtotal.toFixed(2);
+        document.getElementById('tdRecargo').textContent  = '\u20A1' + recargo.toFixed(2);
+        document.getElementById('tdTotal').innerHTML      = '<strong>\u20A1' + total.toFixed(2) + '</strong>';
+        document.getElementById('filaRecargo').style.display = esTarjeta ? '' : 'none';
+    }
+
+    $('#metodoPago').on('change', function() {
+        var subtotal = 0;
+        $.each(lineas, function(i, l) { subtotal += l.subtotal; });
+        actualizarTotales(subtotal, this.value === 'Tarjeta');
+    });
+    </script>
+}

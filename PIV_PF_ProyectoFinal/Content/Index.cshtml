@@ -1,0 +1,86 @@
+@*
+    Dashboard principal - Estilo EDUS
+    Ubicacion: Views/Home/Index.cshtml
+    Muestra el menu de modulos como tarjetas agrupadas por seccion.
+*@
+@{
+    ViewBag.Title = "Inicio";
+    ViewBag.ActiveMenu = "Home";
+
+    // Nombre del usuario logueado (cuando agregues autenticacion lo lees de Session/Identity)
+    var nombreUsuario = ViewBag.NombreUsuario as string ?? "Administrador del Sistema";
+}
+
+@* Encabezado del usuario *@
+<div class="user-header">
+    <div class="user-name">@nombreUsuario</div>
+    <button type="button" class="user-toggle">
+        <i class="fa-solid fa-chevron-down"></i>
+    </button>
+</div>
+
+@* ---------- Seccion: GESTION ---------- *@
+<div class="section-title">GESTIÓN</div>
+<div class="menu-list">
+
+    <a href="@Url.Action("Index", "Usuarios")" class="menu-card">
+        <span class="menu-icon icon-purple">
+            <i class="fa-solid fa-user-shield"></i>
+        </span>
+        <span class="menu-text">Usuarios del sistema</span>
+        <i class="fa-solid fa-chevron-right menu-arrow"></i>
+    </a>
+
+    <a href="@Url.Action("Index", "Clientes")" class="menu-card">
+        <span class="menu-icon icon-teal">
+            <i class="fa-solid fa-users"></i>
+        </span>
+        <span class="menu-text">Clientes</span>
+        <i class="fa-solid fa-chevron-right menu-arrow"></i>
+    </a>
+
+</div>
+
+@* ---------- Seccion: INVENTARIO ---------- *@
+<div class="section-title">INVENTARIO</div>
+<div class="menu-list">
+
+    <a href="@Url.Action("Index", "TiposProducto")" class="menu-card">
+        <span class="menu-icon icon-orange">
+            <i class="fa-solid fa-tags"></i>
+        </span>
+        <span class="menu-text">Tipos de producto</span>
+        <i class="fa-solid fa-chevron-right menu-arrow"></i>
+    </a>
+
+    <a href="@Url.Action("Index", "Productos")" class="menu-card">
+        <span class="menu-icon icon-blue">
+            <i class="fa-solid fa-pills"></i>
+        </span>
+        <span class="menu-text">Productos</span>
+        <i class="fa-solid fa-chevron-right menu-arrow"></i>
+    </a>
+
+</div>
+
+@* ---------- Seccion: VENTAS ---------- *@
+<div class="section-title">VENTAS</div>
+<div class="menu-list">
+
+    <a href="@Url.Action("Create", "Facturas")" class="menu-card">
+        <span class="menu-icon icon-green">
+            <i class="fa-solid fa-cash-register"></i>
+        </span>
+        <span class="menu-text">Nueva factura</span>
+        <i class="fa-solid fa-chevron-right menu-arrow"></i>
+    </a>
+
+    <a href="@Url.Action("Index", "Facturas")" class="menu-card">
+        <span class="menu-icon icon-yellow">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </span>
+        <span class="menu-text">Historial de facturas</span>
+        <i class="fa-solid fa-chevron-right menu-arrow"></i>
+    </a>
+
+</div>

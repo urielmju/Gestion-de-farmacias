@@ -1,0 +1,49 @@
+﻿@*
+    Vista: Views/Clientes/Edit.cshtml
+    Formulario para actualizar nombre y correo de un cliente.
+    La identificacion NO se puede modificar (queda de solo lectura).
+*@
+@model PIV_PF_ProyectoFinal.ViewModels.ClienteViewModel
+
+@{
+    ViewBag.Title = "Editar cliente";
+}
+
+<h1 class="page-title">Editar cliente</h1>
+<p class="page-subtitle">Solo se puede actualizar el nombre y el correo electrónico.</p>
+
+@using (Html.BeginForm("Edit", "Clientes", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdCliente)
+
+    <div class="form-panel">
+
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Identificacion)
+            @Html.TextBoxFor(m => m.Identificacion, new { @class = "form-control", @readonly = "readonly" })
+            <small style="color:var(--text-muted);">La identificación no se puede modificar.</small>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.NombreCompleto)
+            @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.NombreCompleto)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Correo)
+            @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", type = "email" })
+            @Html.ValidationMessageFor(m => m.Correo)
+        </div>
+
+        <div class="form-actions">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> Guardar cambios
+            </button>
+        </div>
+    </div>
+}

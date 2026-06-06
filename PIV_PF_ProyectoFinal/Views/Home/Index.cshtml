@@ -1,0 +1,91 @@
+@{
+    ViewBag.Title = "Inicio";
+    var tipo = Session["TipoUsuario"] as string ?? "";
+}
+
+<h1 class="page-title">Panel principal</h1>
+<p class="page-subtitle">Seleccione el modulo con el que desea trabajar.</p>
+
+@if (tipo == "Administrador")
+{
+    <div class="section-title">Gestion</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Index", "Usuarios")" class="menu-tile">
+            <span class="tile-icon icon-purple"><i class="fa-solid fa-user-shield"></i></span>
+            <span class="tile-text">Usuarios del sistema</span>
+        </a>
+        <a href="@Url.Action("Index", "Clientes")" class="menu-tile">
+            <span class="tile-icon icon-teal"><i class="fa-solid fa-users"></i></span>
+            <span class="tile-text">Clientes</span>
+        </a>
+    </div>
+    <div class="section-title">Inventario</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Index", "Productos")" class="menu-tile">
+            <span class="tile-icon icon-blue"><i class="fa-solid fa-pills"></i></span>
+            <span class="tile-text">Productos</span>
+        </a>
+    </div>
+    <div class="section-title">Ventas</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Create", "Facturas")" class="menu-tile">
+            <span class="tile-icon icon-green"><i class="fa-solid fa-cash-register"></i></span>
+            <span class="tile-text">Nueva factura</span>
+        </a>
+        <a href="@Url.Action("Index", "Facturas")" class="menu-tile">
+            <span class="tile-icon icon-yellow"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+            <span class="tile-text">Historial de facturas</span>
+        </a>
+    </div>
+}
+
+@if (tipo == "Vendedor")
+{
+    <div class="section-title">Gestion</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Index", "Clientes")" class="menu-tile">
+            <span class="tile-icon icon-teal"><i class="fa-solid fa-users"></i></span>
+            <span class="tile-text">Clientes</span>
+        </a>
+    </div>
+    <div class="section-title">Inventario</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Index", "Productos")" class="menu-tile">
+            <span class="tile-icon icon-blue"><i class="fa-solid fa-pills"></i></span>
+            <span class="tile-text">Productos</span>
+        </a>
+    </div>
+    <div class="section-title">Ventas</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Create", "Facturas")" class="menu-tile">
+            <span class="tile-icon icon-green"><i class="fa-solid fa-cash-register"></i></span>
+            <span class="tile-text">Nueva factura</span>
+        </a>
+        <a href="@Url.Action("Index", "Facturas")" class="menu-tile">
+            <span class="tile-icon icon-yellow"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+            <span class="tile-text">Historial de facturas</span>
+        </a>
+    </div>
+}
+
+@if (tipo == "Surtidor")
+{
+    <div class="section-title">Inventario</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Index", "Productos")" class="menu-tile">
+            <span class="tile-icon icon-blue"><i class="fa-solid fa-boxes-stacking"></i></span>
+            <span class="tile-text">Surtir medicamentos</span>
+        </a>
+    </div>
+}
+
+@if (tipo == "Contador")
+{
+    <div class="section-title">Ventas</div>
+    <div class="menu-grid">
+        <a href="@Url.Action("Index", "Facturas")" class="menu-tile">
+            <span class="tile-icon icon-yellow"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+            <span class="tile-text">Historial de facturas</span>
+        </a>
+    </div>
+}

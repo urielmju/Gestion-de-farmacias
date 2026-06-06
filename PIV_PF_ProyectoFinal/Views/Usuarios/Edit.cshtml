@@ -1,0 +1,58 @@
+@model PIV_PF_ProyectoFinal.ViewModels.UsuarioViewModel
+
+@{
+    ViewBag.Title = "Editar usuario";
+}
+
+<h1 class="page-title">Editar usuario</h1>
+<p class="page-subtitle">Se puede actualizar el nombre, correo, tipo y estado del usuario.</p>
+
+@using (Html.BeginForm("Edit", "Usuarios", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.IdUsuario)
+
+    <div class="form-panel">
+
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Identificacion)
+            @Html.TextBoxFor(m => m.Identificacion, new { @class = "form-control", @readonly = "readonly" })
+            <small style="color:var(--text-muted);">La identificacion no se puede modificar.</small>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.NombreCompleto)
+            @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.NombreCompleto)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Correo)
+            @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", type = "email" })
+            @Html.ValidationMessageFor(m => m.Correo)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.TipoUsuario)
+            @Html.DropDownListFor(m => m.TipoUsuario, (SelectList)ViewBag.TiposUsuario,
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TipoUsuario)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Estado)
+            @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.Estados,
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Estado)
+        </div>
+
+        <div class="form-actions">
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> Guardar cambios
+            </button>
+        </div>
+    </div>
+}
