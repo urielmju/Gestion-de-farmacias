@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using PIV_PF_ProyectoFinal.Models;
 using PIV_PF_ProyectoFinal.Seguridad;
@@ -43,8 +45,9 @@ namespace PIV_PF_ProyectoFinal.Controllers
                                 (u.Identificacion == credencial || u.Correo == credencial)
                                 && u.Estado == "Activo");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                RegistrarError(ex);
                 ModelState.AddModelError("",
                     "La base de datos esta reactivandose, intenta de nuevo en unos segundos.");
                 return View(vm);
@@ -130,6 +133,36 @@ namespace PIV_PF_ProyectoFinal.Controllers
             Session.Clear();
             Session.Abandon();
             return RedirectToAction("Login");
+        }
+
+        private static void RegistrarError(Exception ex)
+        {
+            var texto = string.Format(
+                "{0:yyyy-MM-dd HH:mm:ss} UTC{1}Login - excepcion atrapada{1}{2}{1}{3}{1}",
+                DateTime.UtcNow, Environment.NewLine, ex.ToString(), new string('-', 60));
+
+            var home = Environment.GetEnvironmentVariable("HOME");
+            if (!string.IsNullOrEmpty(home))
+            {
+                try
+                {
+                    var ruta = Path.Combine(home, "LogFiles", "error_log.txt");
+                    File.AppendAllText(ruta, texto + Environment.NewLine);
+                    return;
+                }
+                catch
+                {
+                }
+            }
+
+            try
+            {
+                var ruta = HttpContext.Current.Server.MapPath("~/App_Data/error_log.txt");
+                File.AppendAllText(ruta, texto + Environment.NewLine);
+            }
+            catch
+            {
+            }
         }
 
         protected override void Dispose(bool disposing)
