@@ -34,11 +34,21 @@ namespace PIV_PF_ProyectoFinal.Controllers
                 return View(vm);
 
             string credencial = vm.Identificacion.Trim();
+            Usuarios usuario;
 
-            var usuario = db.Usuarios
+            try
+            {
+                usuario = db.Usuarios
                             .FirstOrDefault(u =>
                                 (u.Identificacion == credencial || u.Correo == credencial)
                                 && u.Estado == "Activo");
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("",
+                    "La base de datos esta reactivandose, intenta de nuevo en unos segundos.");
+                return View(vm);
+            }
 
             if (usuario == null || !HashContrasena.Verificar(vm.Contrasena, usuario.Contrasena))
             {
