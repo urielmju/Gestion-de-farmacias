@@ -12,12 +12,20 @@ namespace PIV_PF_ProyectoFinal.Controllers
 {
     public class AccountController : Controller
     {
-        private PIV_PF_ProyectoFinalEntities1 db = new PIV_PF_ProyectoFinalEntities1();
+        private PIV_PF_ProyectoFinalEntities1 db;
 
-        public AccountController()
+        private PIV_PF_ProyectoFinalEntities1 Db
         {
-            db.Configuration.LazyLoadingEnabled = false;
-            db.Configuration.ProxyCreationEnabled = false;
+            get
+            {
+                if (db == null)
+                {
+                    db = new PIV_PF_ProyectoFinalEntities1();
+                    db.Configuration.LazyLoadingEnabled = false;
+                    db.Configuration.ProxyCreationEnabled = false;
+                }
+                return db;
+            }
         }
 
         public ActionResult Login()
@@ -40,7 +48,7 @@ namespace PIV_PF_ProyectoFinal.Controllers
 
             try
             {
-                usuario = db.Usuarios
+                usuario = Db.Usuarios
                             .FirstOrDefault(u =>
                                 (u.Identificacion == credencial || u.Correo == credencial)
                                 && u.Estado == "Activo");
@@ -103,26 +111,36 @@ namespace PIV_PF_ProyectoFinal.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            bool identRepetida = db.Usuarios.Any(u => u.Identificacion == vm.Identificacion);
-            if (identRepetida)
+            try
             {
-                ModelState.AddModelError("Identificacion", "Ya existe un usuario con esta identificacion.");
+                bool identRepetida = Db.Usuarios.Any(u => u.Identificacion == vm.Identificacion);
+                if (identRepetida)
+                {
+                    ModelState.AddModelError("Identificacion", "Ya existe un usuario con esta identificacion.");
+                    return View(vm);
+                }
+
+                var usuario = new Usuarios
+                {
+                    Identificacion = vm.Identificacion.Trim(),
+                    NombreCompleto = vm.NombreCompleto.Trim(),
+                    Correo = vm.Correo.Trim(),
+                    TipoUsuario = vm.TipoUsuario,
+                    Estado = "Activo",
+                    Contrasena = HashContrasena.Generar(vm.Contrasena),
+                    FechaRegistro = DateTime.Now
+                };
+
+                Db.Usuarios.Add(usuario);
+                Db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                RegistrarError(ex);
+                ModelState.AddModelError("",
+                    "La base de datos esta reactivandose, intenta de nuevo en unos segundos.");
                 return View(vm);
             }
-
-            var usuario = new Usuarios
-            {
-                Identificacion = vm.Identificacion.Trim(),
-                NombreCompleto = vm.NombreCompleto.Trim(),
-                Correo = vm.Correo.Trim(),
-                TipoUsuario = vm.TipoUsuario,
-                Estado = "Activo",
-                Contrasena = HashContrasena.Generar(vm.Contrasena),
-                FechaRegistro = DateTime.Now
-            };
-
-            db.Usuarios.Add(usuario);
-            db.SaveChanges();
 
             TempData["Success"] = "Cuenta creada exitosamente. Ya puedes iniciar sesion.";
             return RedirectToAction("Login");
@@ -168,7 +186,7 @@ namespace PIV_PF_ProyectoFinal.Controllers
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-                db.Dispose();
+                db?.Dispose();
             base.Dispose(disposing);
         }
     }
