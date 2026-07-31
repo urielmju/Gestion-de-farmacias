@@ -157,7 +157,15 @@ namespace PIV_PF_ProyectoFinal.Controllers
 
         public ActionResult UltimoError()
         {
-            return Content(_ultimoError, "text/plain");
+            var cs = System.Configuration.ConfigurationManager
+                .ConnectionStrings["PIV_PF_ProyectoFinalEntities1"]?.ConnectionString
+                ?? "(no se encontro la cadena de conexion)";
+
+            var texto = "CONNECTION STRING EN USO:" + Environment.NewLine + cs
+                + Environment.NewLine + Environment.NewLine
+                + "ULTIMO ERROR:" + Environment.NewLine + _ultimoError;
+
+            return Content(texto, "text/plain");
         }
 
         private static void RegistrarError(Exception ex)
