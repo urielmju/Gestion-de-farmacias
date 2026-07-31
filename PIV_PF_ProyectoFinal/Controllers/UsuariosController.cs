@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using PIV_PF_ProyectoFinal.Filters;
 using PIV_PF_ProyectoFinal.Models;
+using PIV_PF_ProyectoFinal.Seguridad;
 using PIV_PF_ProyectoFinal.ViewModels;
 
 namespace PIV_PF_ProyectoFinal.Controllers
@@ -108,7 +109,7 @@ namespace PIV_PF_ProyectoFinal.Controllers
             else
             {
                 bool tieneNumero = System.Text.RegularExpressions.Regex.IsMatch(vm.Contrasena, @"\d");
-                bool tieneEspecial = System.Text.RegularExpressions.Regex.IsMatch(vm.Contrasena, @"[!@#$%^&*()\-_=+\[\]{};:'"",.<>?\\|`~]");
+                bool tieneEspecial = System.Text.RegularExpressions.Regex.IsMatch(vm.Contrasena, @"[!@$%^*()\-_=+\[\]{}:;.,?|~]");
                 if (vm.Contrasena.Length < 6 || !tieneNumero || !tieneEspecial)
                     ModelState.AddModelError("Contrasena",
                         "La contrasena debe tener minimo 6 caracteres, un numero y un caracter especial.");
@@ -135,7 +136,7 @@ namespace PIV_PF_ProyectoFinal.Controllers
                 Correo = vm.Correo.Trim(),
                 TipoUsuario = vm.TipoUsuario,
                 Estado = vm.Estado,
-                Contrasena = vm.Contrasena,
+                Contrasena = HashContrasena.Generar(vm.Contrasena),
                 FechaRegistro = DateTime.Now
             };
 

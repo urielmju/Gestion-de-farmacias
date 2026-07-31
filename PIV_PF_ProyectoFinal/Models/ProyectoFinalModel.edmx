@@ -125,7 +125,7 @@
           <EntitySet Name="Facturas" EntityType="Self.Facturas" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Productos" EntityType="Self.Productos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TiposProducto" EntityType="Self.TiposProducto" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" Table="Usuarios_Farmacia" />
           <AssociationSet Name="FK_Detalle_Factura" Association="Self.FK_Detalle_Factura">
             <End Role="Facturas" EntitySet="Facturas" />
             <End Role="DetalleFactura" EntitySet="DetalleFactura" />

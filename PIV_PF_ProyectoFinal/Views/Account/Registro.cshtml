@@ -1,7 +1,7 @@
-﻿@model PIV_PF_ProyectoFinal.ViewModels.LoginViewModel
+@model PIV_PF_ProyectoFinal.ViewModels.UsuarioViewModel
 
 @{
-    ViewBag.Title = "Iniciar sesion";
+    ViewBag.Title = "Crear cuenta";
     Layout = null;
 }
 
@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>La Farmacia - Iniciar sesion</title>
+    <title>La Farmacia - Crear cuenta</title>
     <link href="@Url.Content("~/Content/edus-theme.css")" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
           media="print" onload="this.media='all'" />
@@ -20,34 +20,35 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            padding: 24px 0;
         }
 
-        .login-box {
+        .registro-box {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 460px;
         }
 
-        .login-logo {
+        .registro-logo {
             text-align: center;
             margin-bottom: 28px;
         }
 
-            .login-logo i {
+            .registro-logo i {
                 font-size: 2.5rem;
                 color: var(--accent);
             }
 
-            .login-logo h1 {
+            .registro-logo h1 {
                 font-size: 1.4rem;
                 margin: 8px 0 4px;
                 color: var(--text-primary);
             }
 
-            .login-logo p {
+            .registro-logo p {
                 font-size: 0.85rem;
                 color: var(--text-muted);
                 margin: 0;
@@ -55,48 +56,59 @@
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <div class="login-logo">
-            <i class="fa-solid fa-prescription-bottle-medical"></i>
-            <h1>La Farmacia</h1>
-            <p>Sistema de gestion</p>
+    <div class="registro-box">
+        <div class="registro-logo">
+            <i class="fa-solid fa-user-plus"></i>
+            <h1>Crear cuenta</h1>
+            <p>La Farmacia - Sistema de gestion</p>
         </div>
 
-        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        @using (Html.BeginForm("Registro", "Account", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(false, "", new { @class = "validation-summary-errors" })
 
             <div class="form-group">
                 @Html.LabelFor(m => m.Identificacion)
-                @Html.TextBoxFor(m => m.Identificacion, new
-                {
-                    @class = "form-control",
-                    placeholder = "Identificacion o correo electronico",
-                    autofocus = "autofocus"
-                })
+                @Html.TextBoxFor(m => m.Identificacion, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Identificacion)
             </div>
 
             <div class="form-group" style="margin-top:14px;">
+                @Html.LabelFor(m => m.NombreCompleto)
+                @Html.TextBoxFor(m => m.NombreCompleto, new { @class = "form-control", placeholder = "Ej: Juan Perez Rodriguez" })
+                @Html.ValidationMessageFor(m => m.NombreCompleto)
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
+                @Html.LabelFor(m => m.Correo)
+                @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", type = "email", placeholder = "ejemplo@correo.com" })
+                @Html.ValidationMessageFor(m => m.Correo)
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
+                @Html.LabelFor(m => m.TipoUsuario)
+                @Html.DropDownListFor(m => m.TipoUsuario,
+                    new SelectList(ViewBag.TiposUsuario),
+                    "-- Seleccione un tipo --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.TipoUsuario)
+            </div>
+
+            <div class="form-group" style="margin-top:14px;">
                 @Html.LabelFor(m => m.Contrasena)
-                @Html.PasswordFor(m => m.Contrasena, new
-                {
-                    @class = "form-control",
-                    placeholder = "Contrasena"
-                })
+                @Html.PasswordFor(m => m.Contrasena, new { @class = "form-control", placeholder = "Min. 6 caracteres, un numero y un caracter especial" })
                 @Html.ValidationMessageFor(m => m.Contrasena)
             </div>
 
             <div style="margin-top:24px;">
                 <button type="submit" class="btn btn-primary" style="width:100%;">
-                    <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+                    <i class="fa-solid fa-check"></i> Crear cuenta
                 </button>
             </div>
         }
 
         <div style="text-align:center; margin-top:16px;">
-            <a href="@Url.Action("Registro")">Crear cuenta nueva</a>
+            <a href="@Url.Action("Login")">Ya tengo cuenta, iniciar sesion</a>
         </div>
     </div>
 

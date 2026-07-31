@@ -1,6 +1,9 @@
+using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using PIV_PF_ProyectoFinal.Models;
+using PIV_PF_ProyectoFinal.Seguridad;
 using PIV_PF_ProyectoFinal.ViewModels;
 
 namespace PIV_PF_ProyectoFinal.Controllers
@@ -35,10 +38,9 @@ namespace PIV_PF_ProyectoFinal.Controllers
             var usuario = db.Usuarios
                             .FirstOrDefault(u =>
                                 (u.Identificacion == credencial || u.Correo == credencial)
-                                && u.Contrasena == vm.Contrasena
                                 && u.Estado == "Activo");
 
-            if (usuario == null)
+            if (usuario == null || !HashContrasena.Verificar(vm.Contrasena, usuario.Contrasena))
             {
                 ModelState.AddModelError("",
                     "Credenciales incorrectas o usuario inactivo.");
@@ -50,6 +52,67 @@ namespace PIV_PF_ProyectoFinal.Controllers
             Session["TipoUsuario"] = usuario.TipoUsuario;
 
             return RedirectToAction("Index", "Home");
+        }
+
+        private static readonly string[] RolesAutoRegistrables = { "Vendedor", "Surtidor", "Contador" };
+
+        public ActionResult Registro()
+        {
+            var vm = new UsuarioViewModel();
+            ViewBag.TiposUsuario = RolesAutoRegistrables;
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Registro(UsuarioViewModel vm)
+        {
+            ViewBag.TiposUsuario = RolesAutoRegistrables;
+
+            if (!RolesAutoRegistrables.Contains(vm.TipoUsuario))
+                ModelState.AddModelError("TipoUsuario", "Tipo de usuario invalido.");
+
+            if (string.IsNullOrEmpty(vm.Contrasena))
+            {
+                ModelState.AddModelError("Contrasena", "La contrasena es obligatoria.");
+            }
+            else
+            {
+                bool tieneNumero = Regex.IsMatch(vm.Contrasena, @"\d");
+                bool tieneEspecial = Regex.IsMatch(vm.Contrasena, @"[!@$%^*()\-_=+\[\]{}:;.,?|~]");
+                if (vm.Contrasena.Length < 6 || !tieneNumero || !tieneEspecial)
+                    ModelState.AddModelError("Contrasena",
+                        "La contrasena debe tener minimo 6 caracteres, un numero y un caracter especial.");
+            }
+
+            ModelState.Remove("Estado");
+
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            bool identRepetida = db.Usuarios.Any(u => u.Identificacion == vm.Identificacion);
+            if (identRepetida)
+            {
+                ModelState.AddModelError("Identificacion", "Ya existe un usuario con esta identificacion.");
+                return View(vm);
+            }
+
+            var usuario = new Usuarios
+            {
+                Identificacion = vm.Identificacion.Trim(),
+                NombreCompleto = vm.NombreCompleto.Trim(),
+                Correo = vm.Correo.Trim(),
+                TipoUsuario = vm.TipoUsuario,
+                Estado = "Activo",
+                Contrasena = HashContrasena.Generar(vm.Contrasena),
+                FechaRegistro = DateTime.Now
+            };
+
+            db.Usuarios.Add(usuario);
+            db.SaveChanges();
+
+            TempData["Success"] = "Cuenta creada exitosamente. Ya puedes iniciar sesion.";
+            return RedirectToAction("Login");
         }
 
         public ActionResult Logout()
