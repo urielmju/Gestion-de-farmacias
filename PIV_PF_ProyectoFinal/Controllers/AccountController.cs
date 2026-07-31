@@ -153,34 +153,18 @@ namespace PIV_PF_ProyectoFinal.Controllers
             return RedirectToAction("Login");
         }
 
+        private static string _ultimoError = "(sin errores registrados todavia)";
+
+        public ActionResult UltimoError()
+        {
+            return Content(_ultimoError, "text/plain");
+        }
+
         private static void RegistrarError(Exception ex)
         {
-            var texto = string.Format(
-                "{0:yyyy-MM-dd HH:mm:ss} UTC{1}Login - excepcion atrapada{1}{2}{1}{3}{1}",
-                DateTime.UtcNow, Environment.NewLine, ex.ToString(), new string('-', 60));
-
-            var home = Environment.GetEnvironmentVariable("HOME");
-            if (!string.IsNullOrEmpty(home))
-            {
-                try
-                {
-                    var ruta = Path.Combine(home, "LogFiles", "error_log.txt");
-                    File.AppendAllText(ruta, texto + Environment.NewLine);
-                    return;
-                }
-                catch
-                {
-                }
-            }
-
-            try
-            {
-                var ruta = HttpContext.Current.Server.MapPath("~/App_Data/error_log.txt");
-                File.AppendAllText(ruta, texto + Environment.NewLine);
-            }
-            catch
-            {
-            }
+            _ultimoError = string.Format(
+                "{0:yyyy-MM-dd HH:mm:ss} UTC{1}{2}",
+                DateTime.UtcNow, Environment.NewLine, ex.ToString());
         }
 
         protected override void Dispose(bool disposing)
