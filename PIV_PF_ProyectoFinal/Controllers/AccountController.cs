@@ -1,8 +1,6 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 using PIV_PF_ProyectoFinal.Models;
 using PIV_PF_ProyectoFinal.Seguridad;
@@ -53,9 +51,8 @@ namespace PIV_PF_ProyectoFinal.Controllers
                                 (u.Identificacion == credencial || u.Correo == credencial)
                                 && u.Estado == "Activo");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                RegistrarError(ex);
                 ModelState.AddModelError("",
                     "La base de datos esta reactivandose, intenta de nuevo en unos segundos.");
                 return View(vm);
@@ -134,9 +131,8 @@ namespace PIV_PF_ProyectoFinal.Controllers
                 Db.Usuarios.Add(usuario);
                 Db.SaveChanges();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                RegistrarError(ex);
                 ModelState.AddModelError("",
                     "La base de datos esta reactivandose, intenta de nuevo en unos segundos.");
                 return View(vm);
@@ -151,28 +147,6 @@ namespace PIV_PF_ProyectoFinal.Controllers
             Session.Clear();
             Session.Abandon();
             return RedirectToAction("Login");
-        }
-
-        private static string _ultimoError = "(sin errores registrados todavia)";
-
-        public ActionResult UltimoError()
-        {
-            var cs = System.Configuration.ConfigurationManager
-                .ConnectionStrings["PIV_PF_ProyectoFinalEntities1"]?.ConnectionString
-                ?? "(no se encontro la cadena de conexion)";
-
-            var texto = "CONNECTION STRING EN USO:" + Environment.NewLine + cs
-                + Environment.NewLine + Environment.NewLine
-                + "ULTIMO ERROR:" + Environment.NewLine + _ultimoError;
-
-            return Content(texto, "text/plain");
-        }
-
-        private static void RegistrarError(Exception ex)
-        {
-            _ultimoError = string.Format(
-                "{0:yyyy-MM-dd HH:mm:ss} UTC{1}{2}",
-                DateTime.UtcNow, Environment.NewLine, ex.ToString());
         }
 
         protected override void Dispose(bool disposing)
